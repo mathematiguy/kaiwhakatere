@@ -197,3 +197,5 @@ CLOSED: [2023-06-13 Tue 01:12]
   #+END_SRC
 ** TODO Explore templates online
 Here's one: https://github.com/timlrx/tailwind-nextjs-starter-blog
+** TODO Look into static files
+https://docs.djangoproject.com/en/4.2/howto/static-files/
