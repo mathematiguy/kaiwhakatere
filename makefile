@@ -14,6 +14,10 @@ runserver: DOCKER_ARGS=-p 8000:8000
 runserver:
 	$(RUN) python3 manage.py runserver 0.0.0.0:8000
 
+install:
+	echo Installing npm pacakges
+	$(RUN) npm install postcss tailwindcss autoprefixer postcss-simple-vars
+
 docker:
 	docker build $(DOCKER_ARGS) --tag $(IMAGE):$(GIT_TAG) .
 	docker tag $(IMAGE):$(GIT_TAG) $(IMAGE):latest
@@ -26,11 +30,9 @@ docker-pull:
 	docker pull $(IMAGE):$(GIT_TAG)
 	docker tag $(IMAGE):$(GIT_TAG) $(IMAGE):latest
 
-enter: DOCKER_ARGS=-p 8000:8000
 enter:
 	$(RUN) bash
 
-enter: DOCKER_ARGS=-p 8000:8000
 enter-root: UID=root
 enter-root: GID=root
 enter-root:

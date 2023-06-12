@@ -1,4 +1,6 @@
+cookiecutter
+django
+django-tailwind
 ipython
 jupyter
 jupyterlab
-django

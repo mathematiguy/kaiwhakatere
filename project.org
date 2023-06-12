@@ -1,0 +1,197 @@
+* Create working Django blog site :Website:
+  :PROPERTIES:
+  :CATEGORY: Website
+  :END:
+** DONE Setup Django Project
+CLOSED: [2023-06-13 Tue 00:20]
+- Install Python and Django
+  #+BEGIN_SRC shell
+  pip install django
+  #+END_SRC
+- Create a new Django project
+  #+BEGIN_SRC shell
+  django-admin startproject myblog
+  #+END_SRC
+
+** DONE Create A Django App
+CLOSED: [2023-06-13 Tue 00:20]
+- Change to project directory and create a `blog` app
+  #+BEGIN_SRC shell
+  cd myblog
+  django-admin startapp blog
+  #+END_SRC
+
+** DONE Update settings.py
+CLOSED: [2023-06-13 Tue 00:20]
+- Add `blog` to `INSTALLED_APPS` in `settings.py`
+  #+BEGIN_SRC python
+  INSTALLED_APPS = [
+      ...
+      'blog',
+  ]
+  #+END_SRC
+
+** DONE Define Model
+CLOSED: [2023-06-13 Tue 00:20]
+- Define `Post` model in `blog/models.py`
+  #+BEGIN_SRC python
+  from django.db import models
+
+  class Post(models.Model):
+      title = models.CharField(max_length=200)
+      content = models.TextField()
+      created_at = models.DateTimeField(auto_now_add=True)
+      updated_at = models.DateTimeField(auto_now=True)
+
+      def __str__(self):
+          return self.title
+  #+END_SRC
+
+** DONE Migrate Database
+CLOSED: [2023-06-13 Tue 00:20]
+- Generate and apply migration
+  #+BEGIN_SRC shell
+  python manage.py makemigrations blog
+  python manage.py migrate
+  #+END_SRC
+
+** DONE Create Admin Interface
+CLOSED: [2023-06-13 Tue 00:20]
+- Register `Post` model in `blog/admin.py`
+  #+BEGIN_SRC python
+  from django.contrib import admin
+  from .models import Post
+
+  admin.site.register(Post)
+  #+END_SRC
+- Create admin user
+  #+BEGIN_SRC shell
+  python manage.py createsuperuser
+  #+END_SRC
+
+** DONE Create Views
+CLOSED: [2023-06-13 Tue 00:20]
+- Create `post_list` view in `blog/views.py`
+  #+BEGIN_SRC python
+  from django.shortcuts import render
+  from .models import Post
+
+  def post_list(request):
+      posts = Post.objects.order_by('-created_at')
+      return render(request, 'blog/post_list.html', {'posts': posts})
+  #+END_SRC
+
+** DONE Create URL Configuration
+CLOSED: [2023-06-13 Tue 00:20]
+- Create URLs for blog app in `blog/urls.py`
+  #+BEGIN_SRC python
+  from django.urls import path
+  from . import views
+
+  app_name = 'blog'
+
+  urlpatterns = [
+      path('', views.post_list, name='post_list'),
+  ]
+  #+END_SRC
+- Include blog URLs in project's URL configuration in `myblog/urls.py`
+  #+BEGIN_SRC python
+  from django.urls import include, path
+
+  urlpatterns = [
+      path('admin/', admin.site.urls),
+      path('blog/', include('blog.urls', namespace='blog')),
+  ]
+  #+END_SRC
+
+** DONE Create Templates
+CLOSED: [2023-06-13 Tue 00:20]
+- Create `post_list.html` template
+  #+BEGIN_SRC html
+  {% for post in posts %}
+      <h2>{{ post.title }}</h2>
+      <p>{{ post.created_at }}</p>
+      <p>{{ post.content }}</p>
+      <hr>
+  {% empty %}
+      <p>No posts yet.</p>
+  {% endfor %}
+  #+END_SRC
+  
+** DONE Run Development Server
+CLOSED: [2023-06-13 Tue 00:20]
+- Start Django development server
+  #+BEGIN_SRC shell
+  python manage.py runserver
+  #+END_SRC
+
+** DONE Add Fake Blog Posts
+CLOSED: [2023-06-13 Tue 00:20]
+- Enter Django shell and create posts
+  #+BEGIN_SRC shell
+  python manage.py shell
+  #+END_SRC
+- Add posts
+  #+BEGIN_SRC python
+  from blog.models import Post
+  Post.objects.create(title='First Post', content='This is the content of the first post.')
+  Post.objects.create(title='Second Post', content='This is the content of the second post.')
+  exit()
+  #+END_SRC
+
+** TODO Add Tailwind CSS
+- Install django-tailwind
+  #+BEGIN_SRC shell
+  pip install django-tailwind
+  #+END_SRC
+- Add `tailwind` and `theme` to `INSTALLED_APPS` in `settings.py`
+  #+BEGIN_SRC python
+  INSTALLED_APPS = [
+      ...
+      'tailwind',
+      'theme',
+  ]
+  #+END_SRC
+- Initiate Tailwind
+  #+BEGIN_SRC shell
+  python manage.py tailwind init
+  #+END_SRC
+- Start Tailwind development server
+  #+BEGIN_SRC shell
+  python manage.py tailwind start
+  #+END_SRC
+- Create `base.html` template and link Tailwind CSS
+  #+BEGIN_SRC html
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>My Blog</title>
+      <link href="{% static 'css/dist/tailwind.min.css' %}" rel="stylesheet">
+  </head>
+  <body>
+      <div class="container mx-auto">
+          {% block content %}
+          {% endblock %}
+      </div>
+  </body>
+  </html>
+  #+END_SRC
+- Extend `base.html` in `post_list.html` and add some Tailwind classes
+  #+BEGIN_SRC html
+  {% extends 'blog/base.html' %}
+
+  {% block content %}
+      {% for post in posts %}
+          <div class="my-4 p-4 border rounded">
+              <h2 class="text-2xl font-bold">{{ post.title }}</h2>
+              <p class="text-sm text-gray-500">{{ post.created_at }}</p>
+              <p>{{ post.content }}</p>
+          </div>
+      {% empty %}
+          <p>No posts yet.</p>
+      {% endfor %}
+  {% endblock %}
+  #+END_SRC
+  

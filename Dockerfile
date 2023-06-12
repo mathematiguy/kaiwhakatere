@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM sitespeedio/node:ubuntu-22.04-nodejs-18.16.0
 
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt update
