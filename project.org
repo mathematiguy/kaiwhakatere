@@ -139,7 +139,8 @@ CLOSED: [2023-06-13 Tue 00:20]
   exit()
   #+END_SRC
 
-** TODO Add Tailwind CSS
+** DONE Add Tailwind CSS
+CLOSED: [2023-06-13 Tue 01:12]
 - Install django-tailwind
   #+BEGIN_SRC shell
   pip install django-tailwind
@@ -194,4 +195,5 @@ CLOSED: [2023-06-13 Tue 00:20]
       {% endfor %}
   {% endblock %}
   #+END_SRC
-  
+** TODO Explore templates online
+Here's one: https://github.com/timlrx/tailwind-nextjs-starter-blog
